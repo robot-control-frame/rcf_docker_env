@@ -1,0 +1,1 @@
+docker exec -it noetic-core-1 bash

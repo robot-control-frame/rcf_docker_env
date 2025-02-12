@@ -1,0 +1,58 @@
+ARG BASE_IMAGE=osrf/ros:noetic-desktop-full
+FROM $BASE_IMAGE
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+ARG USER=robot
+COPY app /app
+WORKDIR /app
+RUN ./base.bash ${USER}
+RUN echo "source /opt/ros/noetic/setup.bash" >> /home/${USER}/.bashrc
+RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/ros/ubuntu/ focal main" > /etc/apt/sources.list.d/ros1-latest.list
+RUN apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+# Install apt deps:
+RUN apt update && apt install -y --no-install-recommends \
+    make \
+    git \
+    git-lfs \
+    curl \
+    wget \
+    ssh \
+    vim \
+    tmux \
+    tmuxp \
+    g++ \
+    gcc \
+    clang \
+    net-tools \
+    iproute2 \
+    iputils-ping \
+    openssl \
+    python3-pip \
+    python3-setuptools \
+    build-essential \
+    devscripts \
+    bash-completion \
+    libudev-dev \
+    libssl-dev \
+    pkg-config \
+    symlinks \
+    zsh \
+    gdb \
+    lldb \
+    ros-noetic-plotjuggler*\
+    ros-noetic-realtime-tools\
+    python3-catkin-tools\
+    ros-noetic-rosmon
+
+RUN apt install -y clang-format-12 clang-tidy-12
+
+RUN git clone https://mirrors.tuna.tsinghua.edu.cn/git/ohmyzsh.git && \
+    cd ohmyzsh/tools && \
+    REMOTE=https://mirrors.tuna.tsinghua.edu.cn/git/ohmyzsh.git sh install.sh && \
+    cd ../../ && \
+    rm -rf ohmyzsh
+
+USER ${USER}
+WORKDIR /home/${USER}
