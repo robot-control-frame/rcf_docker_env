@@ -1,0 +1,39 @@
+services:
+  core:
+    cap_add:
+    - SYS_PTRACE
+    command: bash
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities:
+            - gpu
+            count: all
+            driver: nvidia
+    environment:
+      DISPLAY: ${DISPLAY}
+      NVIDIA_DRIVER_CAPABILITIES: all
+      NVIDIA_VISIBLE_DEVICES: all
+    image: registry.cn-hangzhou.aliyuncs.com/rcf/noetic_webots_mujoco:latest
+    network_mode: bridge
+    platform: linux/amd64
+    ports: []
+    privileged: true
+    runtime: nvidia
+    shm_size: 4g
+    tty: true
+    user: robot
+    volumes:
+    - ~/.Xauthority:/home/robot/.Xauthority:rw
+    - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    - /usr/bin/docker:/usr/bin/docker:rw
+    - /etc/localtime:/etc/localtime:ro
+    - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket:rw
+    - /etc/timezone:/etc/timezone:ro
+    - ~/.ssh:/home/robot/.ssh:rw
+    - /dev:/dev:rw
+    - ~/ros1_ws:/home/robot/ros1_ws:rw
+    - /etc/udev/rules.d:/etc/udev/rules.d:ro
+    - /var/run/docker.sock:/var/run/docker.sock:rw
+    working_dir: /home/robot
