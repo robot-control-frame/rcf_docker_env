@@ -1,1 +1,1 @@
-docker stop humble-core-1
+docker stop humble_conda-core-1
